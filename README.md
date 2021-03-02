@@ -18,13 +18,7 @@
 
 ###maven坐标
 
-```xml
-<dependency>
-    <groupId>io.github.THUNDZENG</groupId>
-    <artifactId>mini-email</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
+待上传。
 
 ###代码示例（使用时建议单独封装成util类，提高性能）
 

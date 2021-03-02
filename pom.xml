@@ -5,7 +5,7 @@
 
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <description>Mini mail sending dependency Library.</description>
 
@@ -21,12 +21,6 @@
             <email>thundzeng@qq.com</email>
         </developer>
     </developers>
-
-    <scm>
-        <connection>scm:git@github.com:biezhi/oh-my-email.git</connection>
-        <developerConnection>scm:git@github.com:biezhi/oh-my-email.git</developerConnection>
-        <url>git@github.com:biezhi/oh-my-email.git</url>
-    </scm>
 
     <properties>
         <java.version>1.8</java.version>
@@ -60,6 +54,7 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <repositories>
