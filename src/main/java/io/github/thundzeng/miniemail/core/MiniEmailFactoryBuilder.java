@@ -4,7 +4,7 @@ import io.github.thundzeng.miniemail.builder.EmailSessionBuilder;
 import io.github.thundzeng.miniemail.constant.SmtpEnum;
 import io.github.thundzeng.miniemail.core.defaults.DefaultMiniEmailFactory;
 import io.github.thundzeng.miniemail.exception.ParameterException;
-import jetbrick.util.StringUtils;
+import io.github.thundzeng.miniemail.util.StringUtils;
 
 import java.util.Properties;
 
@@ -50,7 +50,7 @@ public class MiniEmailFactoryBuilder {
      * 参数检查
      */
     private void checkParameter(String username, String password, SmtpEnum smtpEnum) {
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             throw new ParameterException("请填写完整的收件人信息");
         }
         if (null == smtpEnum) {

@@ -6,7 +6,7 @@ import io.github.thundzeng.miniemail.core.MiniEmail;
 import io.github.thundzeng.miniemail.core.MiniEmailFactory;
 import io.github.thundzeng.miniemail.core.impl.HtmlMiniEmail;
 import io.github.thundzeng.miniemail.core.impl.TextMiniEmail;
-import jetbrick.util.StringUtils;
+import io.github.thundzeng.miniemail.util.StringUtils;
 
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -28,7 +28,7 @@ public class DefaultMiniEmailFactory implements MiniEmailFactory {
     @Override
     public MiniEmail init(String subject, String fromName, EmailTypeEnum emailTypeEnum) {
         // 如果有定制发件人姓名，此处作处理
-        if (!StringUtils.isBlank(fromName) && !fromName.equals(sessionBuilder.getProps("username"))) {
+        if (!StringUtils.isEmpty(fromName) && !fromName.equals(sessionBuilder.getProps("username"))) {
             try {
                 fromName = MimeUtility.encodeText(fromName) + " <" + sessionBuilder.getProps("username") + ">";
             } catch (UnsupportedEncodingException e) {

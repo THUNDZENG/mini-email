@@ -3,6 +3,11 @@ package io.github.thundzeng.miniemail.core;
 import java.io.File;
 import java.net.URL;
 
+/**
+ * 邮件操作接口
+ *
+ * @author thundzeng
+ */
 public interface MiniEmail {
 
     /**
@@ -24,8 +29,8 @@ public interface MiniEmail {
     /**
      * 添加附件文件
      *
-     * @param file
-     * @param fileName
+     * @param file     附件文件
+     * @param fileName 附件文件别名
      * @return MiniEmail
      */
     MiniEmail addAttachment(File file, String fileName);
@@ -33,9 +38,17 @@ public interface MiniEmail {
     /**
      * 添加附件链接
      *
-     * @param url
-     * @param urlName
+     * @param url     附件链接
+     * @param urlName 附件链接别名
      * @return MiniEmail
      */
     MiniEmail addAttachment(URL url, String urlName);
+
+    /**
+     * 添加邮件抄送人
+     *
+     * @param carbonCopies 抄送邮箱
+     * @return MiniEmail
+     */
+    MiniEmail addCarbonCopy(String[] carbonCopies);
 }

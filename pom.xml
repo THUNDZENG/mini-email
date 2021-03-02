@@ -5,8 +5,10 @@
 
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
+    <url>https://github.com/THUNDZENG/mini-email</url>
+    <name>mini-email</name>
     <description>Mini mail sending dependency Library.</description>
 
     <licenses>
@@ -19,14 +21,28 @@
         <developer>
             <name>thundzeng</name>
             <email>thundzeng@qq.com</email>
+            <url>https://github.com/THUNDZENG</url>
         </developer>
     </developers>
-
     <scm>
-        <connection>scm:git@github.com:biezhi/oh-my-email.git</connection>
-        <developerConnection>scm:git@github.com:biezhi/oh-my-email.git</developerConnection>
-        <url>git@github.com:biezhi/oh-my-email.git</url>
+        <url>https://github.com/THUNDZENG/mini-email</url>
+        <connection>https://github.com/THUNDZENG/mini-email.git</connection>
+        <developerConnection>https://github.com/THUNDZENG</developerConnection>
     </scm>
+
+    <!--定义snapshots库和releases库的nexus地址-->
+    <distributionManagement>
+        <snapshotRepository>
+            <!--oss需要对应到settings.xml下的server的id-->
+            <id>oss</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
 
     <properties>
         <java.version>1.8</java.version>
@@ -60,34 +76,11 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
 
-    <repositories>
-        <repository>
-            <id>oss-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+    </dependencies>
 
     <build>
         <plugins>
-            <!--  Compile  -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -97,62 +90,90 @@
                         <format>html</format>
                         <format>xml</format>
                     </formats>
-                    <check />
+                    <check/>
                 </configuration>
+            </plugin>
+            <!--  Compile  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- Source -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--  Gpg Signature  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
+            <!-- 本地开发环境 -->
+            <id>dev</id>
+            <properties>
+                <profiles.active>dev</profiles.active>
+            </properties>
+            <activation>
+                <!-- 设置默认激活这个配置 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <!--打包环境-->
             <id>release</id>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>oss</id>
-                    <url>
-                        https://oss.sonatype.org/content/repositories/snapshots/
-                    </url>
-                </snapshotRepository>
-                <repository>
-                    <id>oss</id>
-                    <url>
-                        https://oss.sonatype.org/service/local/staging/deploy/maven2/
-                    </url>
-                </repository>
-            </distributionManagement>
-            <build>
-                <plugins>
-                    <!--  Source  -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.4</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!--  Gpg Signature  -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.6</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <profiles.active>release</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <!-- 测试环境 -->
+            <id>beta</id>
+            <properties>
+                <profiles.active>beta</profiles.active>
+            </properties>
         </profile>
     </profiles>
 
