@@ -1,6 +1,5 @@
 package io.github.thundzeng.miniemail.builder;
 
-import com.sun.istack.internal.NotNull;
 import io.github.thundzeng.miniemail.constant.SmtpEnum;
 
 import javax.mail.Authenticator;
