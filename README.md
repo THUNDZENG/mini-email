@@ -2,6 +2,7 @@
 
 迷你，但实用的 Java 邮件发送类库。支持 QQ邮箱、QQ企业邮箱、新浪邮箱、网易163邮箱。
 
+[![maven-central](https://img.shields.io/maven-central/v/io.github.biezhi/oh-my-email.svg?style=flat-square)](https://mvnrepository.com/artifact/io.github.thundzeng/mini-email)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 
@@ -18,9 +19,15 @@
 
 ###maven坐标
 
-待上传。
+```xml
+<dependency>
+    <groupId>io.github.thundzeng</groupId>
+    <artifactId>mini-email</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
-###代码示例（使用时建议单独封装成util类，提高性能）
+###代码示例（使用时建议单独封装成util类）
 
 ```java
 package io.github.thundzeng.miniemail;
