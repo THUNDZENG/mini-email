@@ -1,6 +1,7 @@
 package io.github.thundzeng.miniemail.core.impl;
 
-import jetbrick.util.StringUtils;
+
+import io.github.thundzeng.miniemail.util.StringUtils;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -53,7 +54,7 @@ public class BaseMiniEmail {
         MimeBodyPart attachmentPart = new MimeBodyPart();
         try {
             attachmentPart.setDataHandler(new DataHandler(fds));
-            attachmentPart.setFileName(StringUtils.isBlank(fileName) ? MimeUtility.encodeText(fds.getName()) : MimeUtility.encodeText(fileName));
+            attachmentPart.setFileName(StringUtils.isEmpty(fileName) ? MimeUtility.encodeText(fds.getName()) : MimeUtility.encodeText(fileName));
         } catch (Exception e) {
             log.warning("添加邮件附件文件失败：" + fileName);
         }
@@ -65,7 +66,7 @@ public class BaseMiniEmail {
         MimeBodyPart attachmentPart = new MimeBodyPart();
         try {
             attachmentPart.setDataHandler(dataHandler);
-            attachmentPart.setFileName(StringUtils.isBlank(urlName) ? MimeUtility.encodeText(dataHandler.getName()) : urlName);
+            attachmentPart.setFileName(StringUtils.isEmpty(urlName) ? MimeUtility.encodeText(dataHandler.getName()) : urlName);
         } catch (Exception e) {
             log.warning("添加邮件附件链接失败：" + urlName);
         }
