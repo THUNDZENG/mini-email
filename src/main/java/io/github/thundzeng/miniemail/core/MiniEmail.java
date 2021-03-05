@@ -3,6 +3,11 @@ package io.github.thundzeng.miniemail.core;
 import java.io.File;
 import java.net.URL;
 
+/**
+ * 邮件操作接口
+ *
+ * @author thundzeng
+ */
 public interface MiniEmail {
 
     /**

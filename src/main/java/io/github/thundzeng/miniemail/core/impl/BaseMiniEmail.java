@@ -61,7 +61,7 @@ public class BaseMiniEmail {
         return attachmentPart;
     }
 
-    protected MimeBodyPart createURLAttachment(URL url, String urlName) {
+    protected MimeBodyPart createUrlAttachment(URL url, String urlName) {
         DataHandler dataHandler = new DataHandler(url);
         MimeBodyPart attachmentPart = new MimeBodyPart();
         try {

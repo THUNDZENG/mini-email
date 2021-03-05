@@ -75,7 +75,7 @@ public class TextMiniEmail extends BaseMiniEmail implements MiniEmail {
     public MiniEmail addAttachment(URL url, String urlName) {
         if (null != url) {
             try {
-                cover.addBodyPart(super.createURLAttachment(url, urlName));
+                cover.addBodyPart(super.createUrlAttachment(url, urlName));
             } catch (MessagingException e) {
                 log.warning("[Text邮件] 添加邮件附件链接失败：" + urlName);
             }
