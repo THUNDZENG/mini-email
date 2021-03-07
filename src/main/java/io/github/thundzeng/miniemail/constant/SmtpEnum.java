@@ -25,11 +25,11 @@ public enum SmtpEnum {
 
     ;
 
+    private String smtpHost;
+
     SmtpEnum(String smtpHost) {
         this.smtpHost = smtpHost;
     }
-
-    private String smtpHost;
 
     public String getSmtpHost() {
         return smtpHost;
