@@ -9,7 +9,7 @@
 ## 特别的地方
 
 - 非常简洁的邮件发送API，2行代码即可发送邮件
-- 支持自定义发件人昵称、支持附件发送
+- 支持自定义发件人昵称、支持邮件抄送，支持附件发送
 - 支持发送 HTML 邮件
 - 支持扩展邮件发送类型
 - 支持邮件模板
@@ -17,47 +17,22 @@
 
 ## 使用
 
-###maven坐标
+**maven坐标**
 
 ```xml
 <dependency>
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 </dependency>
 ```
 
-###代码示例（使用时建议单独封装成util类）
+**代码示例（使用时建议单独封装成util类）**
 
 ```java
-package io.github.thundzeng.miniemail;
-
-import com.mitchellbosecke.pebble.PebbleEngine;
-import com.mitchellbosecke.pebble.error.PebbleException;
-import com.mitchellbosecke.pebble.template.PebbleTemplate;
-import io.github.thundzeng.miniemail.constant.EmailTypeEnum;
-import io.github.thundzeng.miniemail.constant.SmtpEnum;
-import io.github.thundzeng.miniemail.core.MiniEmail;
-import io.github.thundzeng.miniemail.core.MiniEmailFactory;
-import io.github.thundzeng.miniemail.core.MiniEmailFactoryBuilder;
-import jetbrick.template.JetEngine;
-import jetbrick.template.JetTemplate;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-
 public class MiniEmailTests {
     // 该邮箱修改为你需要测试的收件邮箱地址
-    private static final String TO_EMAIL = "xxxx@qq.com";
+    private static final String TO_EMAIL = "thundzeng@qq.com";
     // 发送邮件给多个收件人
     private static final String[] TO_EMAILS = new String[]{"xxxx@qq.com", "xxxx@sina.com"};
 
@@ -86,11 +61,11 @@ public class MiniEmailTests {
     @Test
     public void testSendHtml() {
         MiniEmail miniEmail = miniEmailFactory.init("HTML邮件主题", "Jay Chou", EmailTypeEnum.HTML);
-        miniEmail.send(TO_EMAIL, "<h1 style='color:red;'>信件内容HTML123456</h1>");
+        miniEmail.addCarbonCopy(new String[]{TO_EMAIL}).send(TO_EMAIL, "<h1 style='color:red;'>信件内容HTML123456</h1>");
     }
 
     /**
-     * 抄送附件，单个收件人发送
+     * 添加附件，单个收件人发送
      *
      * @throws MalformedURLException
      */
@@ -109,7 +84,7 @@ public class MiniEmailTests {
     }
 
     /**
-     * 抄送附件，多个收件人发送
+     * 添加附件，多个收件人、多个抄送收件人发送
      *
      * @throws MalformedURLException
      */
@@ -121,8 +96,8 @@ public class MiniEmailTests {
 
         URL url = new URL("https://avatars.githubusercontent.com/u/26403930?s=460&u=1a90eb155a8dbb56385be72a90fdd2911a068409&v=4");
         MiniEmail miniEmail = miniEmailFactory.init("HTML邮件主题", "Jay Chou", EmailTypeEnum.HTML);
-        miniEmail
-                .addAttachment(file, "灯塔.jpg")
+        miniEmail.addCarbonCopy(TO_EMAILS)
+//                .addAttachment(file, "灯塔.jpg")
                 .addAttachment(url, "THUNDZENG的头像.jpg")
                 .send(TO_EMAILS, "<h1 style='color:red;'>请查看附件内容</h1>");
     }

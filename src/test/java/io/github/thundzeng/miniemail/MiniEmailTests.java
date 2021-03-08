@@ -58,7 +58,7 @@ public class MiniEmailTests {
     }
 
     /**
-     * 抄送附件，单个收件人发送
+     * 添加附件，单个收件人发送
      *
      * @throws MalformedURLException
      */
@@ -77,7 +77,7 @@ public class MiniEmailTests {
     }
 
     /**
-     * 抄送附件，多个收件人、多个抄送收件人发送
+     * 添加附件，多个收件人、多个抄送收件人发送
      *
      * @throws MalformedURLException
      */
