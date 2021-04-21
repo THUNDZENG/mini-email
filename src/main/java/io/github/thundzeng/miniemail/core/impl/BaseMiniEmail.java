@@ -21,13 +21,14 @@ import java.util.logging.Logger;
  *
  * @author thundzeng
  */
-public class BaseMiniEmail {
+public abstract class BaseMiniEmail {
 
     protected static Logger log;
 
     static {
         log = Logger.getLogger("default");
-        log.setLevel(Level.INFO);
+        // 日志输出默认关闭。需要源码调试时，可设置为 Level.INFO
+        log.setLevel(Level.OFF);
     }
 
     private MimeMessage msg;
@@ -38,7 +39,7 @@ public class BaseMiniEmail {
         this.cover = cover;
     }
 
-    public void config(String subject, String fromName, String[] to, Message.RecipientType recipientType) {
+    public void config(String subject, String fromName, String to) {
         try {
             if (null != subject) {
                 msg.setSubject(subject, "UTF-8");
@@ -47,8 +48,7 @@ public class BaseMiniEmail {
                 msg.setFrom(new InternetAddress(fromName));
             }
             if (null != to) {
-                InternetAddress[] parse = InternetAddress.parse(String.join(",", to));
-                msg.setRecipients(recipientType, parse);
+                msg.setRecipients(Message.RecipientType.TO, to);
             }
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -61,10 +61,16 @@ public class BaseMiniEmail {
      * @param content 发送内容
      * @throws MessagingException
      */
-    public void addContent(String content) throws MessagingException {
-    }
+    protected abstract void addContent(String content) throws MessagingException;
 
     public void setContent(MimeBodyPart bodyPart) throws MessagingException {
+        // fix：群发时，内容会多次拼接
+        int count = cover.getCount();
+        if (count > 0) {
+            for (int i = 0; i < count; i++) {
+                cover.removeBodyPart(i);
+            }
+        }
         cover.addBodyPart(bodyPart);
         msg.setContent(cover);
     }
@@ -98,28 +104,30 @@ public class BaseMiniEmail {
     }
 
     public void send(String to, String content) {
-        send(new String[]{to}, content);
+        log.info("邮件发送开始------>" + to);
+        try {
+            config(null, null, to);
+            addContent(content);
+            msg.setSentDate(Calendar.getInstance().getTime());
+            Transport.send(msg);
+        } catch (MessagingException e) {
+            log.warning("邮件发送失败：" + to);
+        }
+        log.info("邮件发送结束------>" + to);
     }
 
     public void send(String[] tos, String content) {
         if (tos.length > 0) {
-            String to = String.join(",", tos);
-            log.info("邮件发送开始------>" + to);
-            try {
-                config(null, null, tos, Message.RecipientType.TO);
-                addContent(content);
-                msg.setSentDate(Calendar.getInstance().getTime());
-                Transport.send(msg);
-            } catch (MessagingException e) {
-                log.warning("邮件发送失败：" + to);
+            for (String to : tos) {
+                send(to, content);
             }
-            log.info("邮件发送结束------>" + to);
         }
     }
 
     public MiniEmail addCarbonCopy(MiniEmail miniEmail, String[] carbonCopies) throws MessagingException {
         if (null != carbonCopies && carbonCopies.length > 0) {
-            config(null, null, carbonCopies, Message.RecipientType.CC);
+            InternetAddress[] parse = InternetAddress.parse(String.join(",", carbonCopies));
+            msg.setRecipients(Message.RecipientType.CC, parse);
         }
 
         return miniEmail;

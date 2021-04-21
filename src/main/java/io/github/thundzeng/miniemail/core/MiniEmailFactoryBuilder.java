@@ -48,6 +48,10 @@ public class MiniEmailFactoryBuilder {
 
     /**
      * 参数检查
+     *
+     * @param username 发件人邮箱。
+     * @param password 发件人邮箱密码（qq邮箱、163邮箱需要的是邮箱授权码，新浪邮箱直接是邮箱登录密码）。
+     * @param smtpEnum 支持的邮箱Host。{@link SmtpEnum}
      */
     private void checkParameter(String username, String password, SmtpEnum smtpEnum) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {

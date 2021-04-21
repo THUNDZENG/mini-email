@@ -6,6 +6,11 @@
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 
+## 前言
+
+- 若此项目你也在使用，请给一个 Star 鼓励下作者噢~
+- 若对项目有任何疑问，可在 Issues 上新增 Issue，作者看到会第一时间查看和回复噢~
+
 ## 特别的地方
 
 - 非常简洁的邮件发送API，2行代码即可发送邮件
@@ -17,13 +22,13 @@
 
 ## 使用
 
-**maven坐标**
+**maven坐标（请使用以下版本）**
 
 ```xml
 <dependency>
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -150,10 +155,19 @@ public class MiniEmailTests {
 
 ```
 
-### 邮件模版示例
+### 邮件模版示例（可选。若要使用需要单独引入依赖）
 
 **Pebble**
+```xml
+<!-- 引入依赖 -->
+<dependency>
+    <groupId>com.mitchellbosecke</groupId>
+    <artifactId>pebble</artifactId>
+    <version>2.2.0</version>
+</dependency>
+```
 ```html
+<!-- 在resources文件夹下，新建 hello.html 文件，将以下测试内容复制至文件中 -->
 <div>
     <p>一件事无论太晚，或是太早，都不会阻拦你成为你想成为的那个人。</p>
     <p>这个过程没有时间的期限，只要你想，随时都可以开始，要改变或者保持现状都无所谓，做事情本不应有所束缚。</p>
@@ -167,7 +181,16 @@ public class MiniEmailTests {
 ```
 
 **Jetx**
+```xml
+<!-- 引入依赖 -->
+<dependency>
+    <groupId>com.github.subchen</groupId>
+    <artifactId>jetbrick-template</artifactId>
+    <version>2.1.2</version>
+</dependency>
+```
 ```html
+<!-- 在resources文件夹下，新建 hello.jext 文件，将以下测试内容复制至文件中 -->
 <div>
     <p>一件事无论太晚，或是太早，都不会阻拦你成为你想成为的那个人。</p>
     <p>这个过程没有时间的期限，只要你想，随时都可以开始，要改变或者保持现状都无所谓，做事情本不应有所束缚。</p>

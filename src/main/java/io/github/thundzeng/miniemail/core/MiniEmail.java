@@ -27,7 +27,7 @@ public interface MiniEmail {
     void send(String[] tos, String content);
 
     /**
-     * 添加附件文件
+     * 添加附件文件（本地文件）
      *
      * @param file     附件文件
      * @param fileName 附件文件别名
@@ -36,7 +36,7 @@ public interface MiniEmail {
     MiniEmail addAttachment(File file, String fileName);
 
     /**
-     * 添加附件链接
+     * 添加附件文件（网络链接文件）
      *
      * @param url     附件链接
      * @param urlName 附件链接别名

@@ -5,7 +5,7 @@
 
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
     <url>https://github.com/THUNDZENG/mini-email</url>
     <name>mini-email</name>

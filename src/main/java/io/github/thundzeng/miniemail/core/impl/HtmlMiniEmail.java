@@ -1,8 +1,8 @@
 package io.github.thundzeng.miniemail.core.impl;
 
 import io.github.thundzeng.miniemail.core.MiniEmail;
+import io.github.thundzeng.miniemail.util.StringUtils;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -18,13 +18,12 @@ import java.net.URL;
 public class HtmlMiniEmail extends BaseMiniEmail implements MiniEmail {
     public HtmlMiniEmail(MimeMessage mimeMessage, String subject, String fromName) {
         super(mimeMessage, new MimeMultipart("mixed"));
-
-        config(subject, fromName, null, Message.RecipientType.TO);
+        config(subject, fromName, null);
     }
 
     @Override
     public void addContent(String content) throws MessagingException {
-        if (null != content) {
+        if (!StringUtils.isEmpty(content)) {
             MimeBodyPart bodyPart = new MimeBodyPart();
             bodyPart.setContent(content, "text/html; charset=utf-8");
             setContent(bodyPart);
