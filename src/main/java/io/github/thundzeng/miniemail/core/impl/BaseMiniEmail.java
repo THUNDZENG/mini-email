@@ -39,7 +39,7 @@ public abstract class BaseMiniEmail {
         this.cover = cover;
     }
 
-    public void config(String subject, String fromName, String to) {
+    public void config(String subject, String fromName, String[] to) {
         try {
             if (null != subject) {
                 msg.setSubject(subject, "UTF-8");
@@ -48,7 +48,8 @@ public abstract class BaseMiniEmail {
                 msg.setFrom(new InternetAddress(fromName));
             }
             if (null != to) {
-                msg.setRecipients(Message.RecipientType.TO, to);
+                InternetAddress[] parse = InternetAddress.parse(String.join(",", to));
+                msg.setRecipients(Message.RecipientType.TO, parse);
             }
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -64,13 +65,6 @@ public abstract class BaseMiniEmail {
     protected abstract void addContent(String content) throws MessagingException;
 
     public void setContent(MimeBodyPart bodyPart) throws MessagingException {
-        // fix：群发时，内容会多次拼接
-        int count = cover.getCount();
-        if (count > 0) {
-            for (int i = 0; i < count; i++) {
-                cover.removeBodyPart(i);
-            }
-        }
         cover.addBodyPart(bodyPart);
         msg.setContent(cover);
     }
@@ -104,24 +98,20 @@ public abstract class BaseMiniEmail {
     }
 
     public void send(String to, String content) {
-        log.info("邮件发送开始------>" + to);
+        send(new String[]{to}, content);
+    }
+
+    public void send(String[] tos, String content) {
+        log.info("邮件发送开始------>" + tos);
         try {
-            config(null, null, to);
+            config(null, null, tos);
             addContent(content);
             msg.setSentDate(Calendar.getInstance().getTime());
             Transport.send(msg);
         } catch (MessagingException e) {
-            log.warning("邮件发送失败：" + to);
+            log.warning("邮件发送失败：" + tos);
         }
-        log.info("邮件发送结束------>" + to);
-    }
-
-    public void send(String[] tos, String content) {
-        if (tos.length > 0) {
-            for (String to : tos) {
-                send(to, content);
-            }
-        }
+        log.info("邮件发送结束------>" + tos);
     }
 
     public MiniEmail addCarbonCopy(MiniEmail miniEmail, String[] carbonCopies) throws MessagingException {

@@ -28,7 +28,7 @@
 <dependency>
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
