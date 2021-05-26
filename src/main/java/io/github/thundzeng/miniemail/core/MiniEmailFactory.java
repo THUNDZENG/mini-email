@@ -1,7 +1,5 @@
 package io.github.thundzeng.miniemail.core;
 
-import io.github.thundzeng.miniemail.constant.EmailTypeEnum;
-
 /**
  * 邮件工厂接口
  *
@@ -12,19 +10,28 @@ public interface MiniEmailFactory {
     /**
      * 初始化邮件信息
      *
-     * @param subject       主题。
-     * @param fromName      发件人姓名。
-     * @param emailTypeEnum 邮件类型。 {@link EmailTypeEnum}
+     * @param nickName 发件人定制昵称。
+     * @param clazz    开放邮件实现，只要继承 BaseMiniEmail，即可传入使用
      * @return MiniEmail
+     * @since 1.3.0
      */
-    MiniEmail init(String subject, String fromName, EmailTypeEnum emailTypeEnum);
+    MiniEmail init(String nickName, Class<? extends BaseMiniEmail> clazz);
+
+    /**
+     * 初始化邮件信息
+     *
+     * @param nickName 发件人定制昵称
+     * @return MiniEmail
+     * @since 1.3.0
+     */
+    MiniEmail init(String nickName);
 
     /**
      * 初始化邮件信息简易版
      *
-     * @param emailTypeEnum 邮件类型。 {@link EmailTypeEnum}
      * @return MiniEmail
+     * @since 1.3.0
      */
-    MiniEmail init(EmailTypeEnum emailTypeEnum);
+    MiniEmail init();
 
 }

@@ -2,7 +2,6 @@ package io.github.thundzeng.miniemail.core;
 
 import io.github.thundzeng.miniemail.builder.EmailSessionBuilder;
 import io.github.thundzeng.miniemail.constant.SmtpEnum;
-import io.github.thundzeng.miniemail.core.defaults.DefaultMiniEmailFactory;
 import io.github.thundzeng.miniemail.exception.ParameterException;
 import io.github.thundzeng.miniemail.util.StringUtils;
 
