@@ -49,6 +49,13 @@ public abstract class BaseMiniEmail implements MiniEmail {
             Transport.send(msg);
         } catch (MessagingException e) {
             e.printStackTrace();
+        } finally {
+            // fix issue : https://gitee.com/thundzeng/mini-email/issues/I4GS8C
+            try {
+                clearContentAfterSend();
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -137,6 +144,23 @@ public abstract class BaseMiniEmail implements MiniEmail {
         MimeBodyPart bodyPart = new MimeBodyPart();
         bodyPart.setContent(content, contentType.getContentType());
         cover.addBodyPart(bodyPart);
+        msg.setContent(cover);
+    }
+
+    /**
+     * 内容发送成功后，清除发送的内容
+     *
+     * @throws MessagingException
+     */
+    private void clearContentAfterSend() throws MessagingException {
+        int count = cover.getCount();
+        if (count <= 0) {
+            return ;
+        }
+
+        for (int i = 0; i < count; i++) {
+            cover.removeBodyPart(i);
+        }
         msg.setContent(cover);
     }
 }
