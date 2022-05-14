@@ -1,6 +1,6 @@
 package io.github.thundzeng.miniemail.builder;
 
-import io.github.thundzeng.miniemail.constant.SmtpEnum;
+import io.github.thundzeng.miniemail.config.MailConfig;
 
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
@@ -13,34 +13,39 @@ import java.util.Properties;
  * @author thundzeng
  */
 public class EmailSessionBuilder {
-    private Properties props;
+	private Properties props;
 
-    public EmailSessionBuilder(Properties props, String username, String password, SmtpEnum smtpEnum, boolean debug) {
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.ssl.enable", "true");
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.smtp.timeout", "10000");
-        props.put("mail.smtp.port", "465");
+	public EmailSessionBuilder(MailConfig config) {
+		this.setProperties(config);
+	}
 
-        props.setProperty("username", username);
-        props.setProperty("password", password);
+	private void setProperties(MailConfig config) {
+		Properties props = new Properties();
+		props.put("mail.smtp.auth", config.getMailSmtpAuth());
+		props.put("mail.smtp.ssl.enable", config.getMailSmtpSslEnable());
+		props.put("mail.transport.protocol", config.getMailTransportProtocol());
+		props.put("mail.smtp.timeout", config.getMailSmtpTimeout());
+		props.put("mail.smtp.port", config.getMailSmtpPort());
 
-        props.put("mail.smtp.host", smtpEnum.getSmtpHost());
-        props.put("mail.debug", debug ? "true" : "false");
+		props.setProperty("username", config.getUsername());
+		props.setProperty("password", config.getPassword());
 
-        this.props = props;
-    }
+		props.put("mail.smtp.host", config.getMailSmtpHost().getSmtpHost());
+		props.put("mail.debug", config.getMailDebug() ? "true" : "false");
 
-    public Session parseSession() {
-        return Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(getProps("username"), getProps("password"));
-            }
-        });
-    }
+		this.props = props;
+	}
 
-    public String getProps(String key) {
-        return props.getProperty(key);
-    }
+	public Session parseSession() {
+		return Session.getInstance(props, new Authenticator() {
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(getProps("username"), getProps("password"));
+			}
+		});
+	}
+
+	public String getProps(String key) {
+		return props.getProperty(key);
+	}
 }

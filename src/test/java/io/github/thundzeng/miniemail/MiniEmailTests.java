@@ -1,5 +1,6 @@
 package io.github.thundzeng.miniemail;
 
+import io.github.thundzeng.miniemail.config.MailConfig;
 import io.github.thundzeng.miniemail.constant.EmailContentTypeEnum;
 import io.github.thundzeng.miniemail.constant.SmtpEnum;
 import io.github.thundzeng.miniemail.core.MiniEmail;
@@ -26,7 +27,16 @@ public class MiniEmailTests {
     @Before
     public void before() {
         // 创建一次就可以了
-            miniEmailFactory = new MiniEmailFactoryBuilder().build(true, "123456@sina.com", "xxxxxx", SmtpEnum.SMTP_SINA);
+//        miniEmailFactory = new MiniEmailFactoryBuilder().build(true, "123456@sina.com", "xxxxxx", SmtpEnum.SMTP_SINA);
+
+        MailConfig config = MailConfig.config("123456@sina.com", "xxxxxx")
+                .setMailSmtpAuth(Boolean.TRUE)
+                .setMailSmtpSslEnable(Boolean.TRUE)
+                .setMailTransportProtocol("smtp")
+                .setMailSmtpTimeout(10000L)
+                .setMailSmtpPort(465)
+                .setMailSmtpHost(SmtpEnum.SMTP_SINA).setMailDebug(true);
+        miniEmailFactory = new MiniEmailFactoryBuilder().build(config);
     }
 
     /**

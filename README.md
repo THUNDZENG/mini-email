@@ -5,12 +5,16 @@
 [![maven-central](https://img.shields.io/maven-central/v/io.github.thundzeng/mini-email.svg?style=flat-square)](https://mvnrepository.com/artifact/io.github.thundzeng/mini-email)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-
 ## 前言
 
+- 建议使用jdk1.8+
 - 若此项目你也在使用，请给一个 Star 鼓励下作者噢~
 - 若对项目有任何疑问，可在 Issues 上新增 Issue，作者看到会第一时间查看和回复噢~
 - 若你对项目有更好的功能或建设性代码，可 clone develop 分支代码进行更改，更改完成后 push 到 develop 分支，并向 feature 分支发起 pull requests。欢迎大家提交代码噢~
+- 国内访问github受限，所以下面贴上 gitee 和 github 对应项目地址，大家各自选择。
+
+  - gitee 项目地址：[点击跳转](https://gitee.com/thundzeng/mini-email)
+  - gtihub 项目地址：[点击跳转](https://github.com/THUNDZENG/mini-email)
 
 ## 特别的地方
 
@@ -28,11 +32,11 @@
 <dependency>
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>1.3.1</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
-**代码示例（使用时可单独封装成util类）**
+**代码示例（使用时可单独封装成singleton util类）**
 
 ```java
 public class MiniEmailTests {
@@ -46,7 +50,16 @@ public class MiniEmailTests {
     @Before
     public void before() {
         // 创建一次就可以了
-        miniEmailFactory = new MiniEmailFactoryBuilder().build(true, "123456@sina.com", "xxxxxx", SmtpEnum.SMTP_SINA);
+        miniEmailFactory = new MiniEmailFactoryBuilder().build(false, "123456@sina.com", "xxxxxx", SmtpEnum.SMTP_SINA);
+        // 如何更多自定义配置，可以使用如下方式进行创建
+//        MailConfig config = MailConfig.config("123456@sina.com", "xxxxxx")
+//                .setMailSmtpAuth(Boolean.TRUE)
+//                .setMailSmtpSslEnable(Boolean.TRUE)
+//                .setMailTransportProtocol("smtp")
+//                .setMailSmtpTimeout(10000L)
+//                .setMailSmtpPort(465)
+//                .setMailSmtpHost(SmtpEnum.SMTP_SINA).setMailDebug(false);
+//        miniEmailFactory = new MiniEmailFactoryBuilder().build(config);
     }
 
     /**
