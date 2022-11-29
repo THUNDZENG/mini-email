@@ -22,10 +22,14 @@ public enum SmtpEnum {
      * 新浪邮箱
      */
     SMTP_SINA("smtp.sina.com.cn"),
+    /**
+     * 中国移动邮箱
+     */
+    SMTP_139("smtp.139.com"),
 
     ;
 
-    private String smtpHost;
+    private final String smtpHost;
 
     SmtpEnum(String smtpHost) {
         this.smtpHost = smtpHost;

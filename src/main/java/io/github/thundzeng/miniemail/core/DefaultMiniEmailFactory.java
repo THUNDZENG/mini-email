@@ -1,6 +1,7 @@
 package io.github.thundzeng.miniemail.core;
 
 import io.github.thundzeng.miniemail.builder.EmailSessionBuilder;
+import io.github.thundzeng.miniemail.config.MailConfig;
 import io.github.thundzeng.miniemail.util.StringUtils;
 
 import javax.mail.internet.MimeMessage;
@@ -16,46 +17,72 @@ import java.lang.reflect.InvocationTargetException;
 public class DefaultMiniEmailFactory implements MiniEmailFactory {
 
     private EmailSessionBuilder sessionBuilder;
+    private String finalSenderName;
+    private String customMiniEmailPath;
 
-    public DefaultMiniEmailFactory(EmailSessionBuilder sessionBuilder) {
-        this.sessionBuilder = sessionBuilder;
+    public DefaultMiniEmailFactory(MailConfig config) {
+        // init session
+        this.sessionBuilder = new EmailSessionBuilder(config);
+        this.finalSenderName = constructFinalSenderName(config.getSenderNickname(), config.getUsername());
+        this.customMiniEmailPath = config.getCustomMiniEmail();
     }
 
-    @Override
-    public MiniEmail init(String nickName, Class<? extends BaseMiniEmail> clazz) {
-        String fromName = sessionBuilder.getProps("username");
-
-        // 如果有定制发件人定制昵称，此处作处理
-        if (!StringUtils.isEmpty(nickName) && !nickName.equals(sessionBuilder.getProps("username"))) {
-            try {
-                fromName = MimeUtility.encodeText(nickName) + " <" + sessionBuilder.getProps("username") + ">";
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+    /**
+     * 发件人昵称 构建
+     *
+     * @param senderNickname 自定义昵称
+     * @param username       发件人邮箱
+     * @return String 处理后的发件人昵称
+     */
+    private String constructFinalSenderName(String senderNickname, String username) {
+        boolean notDealName = StringUtils.isEmpty(senderNickname) || senderNickname.equals(username);
+        if (notDealName) {
+            return username;
         }
 
+        // 如果有定制发件人昵称，此处作处理
+        try {
+            senderNickname = MimeUtility.encodeText(senderNickname) + " <" + username + ">";
+        } catch (UnsupportedEncodingException e) {
+            DefaultMiniEmail.log.warning("## senderNickname 解析失败，重新使用 username 作为发件人别名。");
+        }
+
+        // 若定制发件人定制昵称为空，则使用 username 作为发件人别名
+        return StringUtils.isEmpty(senderNickname) ? username : senderNickname;
+    }
+
+    private MiniEmail init(Class<? extends BaseMiniEmail> clazz) {
         BaseMiniEmail baseMiniEmail = null;
         try {
             baseMiniEmail = clazz.getDeclaredConstructor(MimeMessage.class, String.class)
-                    .newInstance(new MimeMessage(sessionBuilder.parseSession()), fromName);
+                    .newInstance(new MimeMessage(sessionBuilder.parseSession()), finalSenderName);
         } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
         }
+
         if (null == baseMiniEmail) {
-            throw new RuntimeException("初始化 MiniEmail 失败，请检查类是否继承 BaseMiniEmail。");
+            throw new RuntimeException("初始化 MiniEmail 失败，请检查类路径正确以及是否继承 BaseMiniEmail。");
         }
 
         return baseMiniEmail;
     }
 
     @Override
-    public MiniEmail init(String nickName) {
-        return this.init(nickName, DefaultMiniEmail.class);
-    }
-
-    @Override
     public MiniEmail init() {
-        return this.init(null, DefaultMiniEmail.class);
+        if (StringUtils.isEmpty(customMiniEmailPath)) {
+            return this.init(DefaultMiniEmail.class);
+        }
+
+        // 加载自定义实现类
+        Class<BaseMiniEmail> customClass = null;
+        try {
+            customClass = (Class<BaseMiniEmail>) DefaultMiniEmailFactory.class
+                    .getClassLoader()
+                    .loadClass(customMiniEmailPath);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return null == customClass ? null : this.init(customClass);
     }
 
 }

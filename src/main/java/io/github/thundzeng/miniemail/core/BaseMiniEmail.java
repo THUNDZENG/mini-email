@@ -104,9 +104,7 @@ public abstract class BaseMiniEmail implements MiniEmail {
         try {
             msg.setFrom(new InternetAddress(fromName));
 
-            if (!StringUtils.isEmpty(subject)) {
-                msg.setSubject(subject, "UTF-8");
-            }
+            msg.setSubject(subject, "UTF-8");
 
             addRecipient(to, Message.RecipientType.TO);
 
@@ -158,8 +156,8 @@ public abstract class BaseMiniEmail implements MiniEmail {
             return ;
         }
 
-        for (int i = 0; i < count; i++) {
-            cover.removeBodyPart(i);
+        while (cover.getCount() > 0) {
+            cover.removeBodyPart(0);
         }
         msg.setContent(cover);
     }

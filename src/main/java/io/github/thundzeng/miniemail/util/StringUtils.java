@@ -8,6 +8,10 @@ package io.github.thundzeng.miniemail.util;
  */
 public class StringUtils {
     public static boolean isEmpty(Object str) {
-        return (str == null || "".equals(str));
+        if (null == str) {
+            return true;
+        }
+        String toString = str.toString();
+        return ("".equals(toString) || "".equals(toString.trim()));
     }
 }
