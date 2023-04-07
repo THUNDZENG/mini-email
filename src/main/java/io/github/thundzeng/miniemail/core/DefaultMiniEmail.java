@@ -2,20 +2,16 @@ package io.github.thundzeng.miniemail.core;
 
 
 import io.github.thundzeng.miniemail.constant.EmailContentTypeEnum;
-import io.github.thundzeng.miniemail.core.MiniEmail;
-import io.github.thundzeng.miniemail.util.StringUtils;
+import jakarta.activation.DataHandler;
+import jakarta.activation.FileDataSource;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.internet.*;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.Calendar;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.List;
 
 /**
  * 基础邮件模板
@@ -23,24 +19,73 @@ import java.util.logging.Logger;
  * @author thundzeng
  */
 public class DefaultMiniEmail extends BaseMiniEmail {
-    protected static Logger log;
-
-    static {
-        log = Logger.getLogger("default");
-        // 日志输出默认关闭。需要源码调试时，可设置为 Level.INFO
-        log.setLevel(Level.OFF);
-    }
 
     public DefaultMiniEmail(MimeMessage msg, String fromName) {
         super(msg, fromName);
     }
 
+    @Override
+    public String send(String to, String content) {
+        return this.send(to, null, EmailContentTypeEnum.TEXT, content);
+    }
 
     @Override
-    public void send(String[] tos, String subject, EmailContentTypeEnum contentType, String content) {
-        log.info("邮件发送开始------>" + tos);
-        super.send(tos, subject, contentType, content);
-        log.info("邮件发送结束------>" + tos);
+    public List<String> send(String[] tos, String content) {
+        return this.send(tos, null, EmailContentTypeEnum.TEXT, content);
+    }
+
+    @Override
+    public String send(String to, String subject, EmailContentTypeEnum contentType, String content) {
+        return super.send(to, subject, contentType, content);
+    }
+
+    @Override
+    public List<String> send(String[] tos, String subject, EmailContentTypeEnum contentType, String content) {
+        return super.send(tos, subject, contentType, content);
+    }
+
+    @Override
+    public MiniEmail addAttachment(File file, String fileName) {
+        try {
+            super.setDataHandler(new DataHandler(new FileDataSource(file)), fileName);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return this;
+    }
+
+    @Override
+    public MiniEmail addAttachment(URL url, String urlName) {
+        try {
+            super.setDataHandler(new DataHandler(url), urlName);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return this;
+    }
+
+    @Override
+    public MiniEmail addCarbonCopy(String[] carbonCopies) {
+        try {
+            super.addRecipients(carbonCopies, Message.RecipientType.CC);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        return this;
+    }
+
+    @Override
+    public MiniEmail addBlindCarbonCopy(String[] blindCarbonCopies) {
+        try {
+            super.addRecipients(blindCarbonCopies, Message.RecipientType.BCC);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+        return this;
     }
 
 }

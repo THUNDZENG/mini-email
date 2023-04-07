@@ -4,6 +4,8 @@ import io.github.thundzeng.miniemail.constant.SmtpEnum;
 
 /**
  * 邮件配置项 封装类
+ *
+ * @author thundzeng
  */
 public class MailConfig {
     /**

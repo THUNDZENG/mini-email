@@ -7,7 +7,7 @@ package io.github.thundzeng.miniemail.constant;
  */
 public enum SmtpEnum {
     /**
-     * QQ邮箱
+     * QQ邮箱。需开启POP3，使用密钥作为密码
      */
     SMTP_QQ("smtp.qq.com"),
     /**
@@ -15,7 +15,7 @@ public enum SmtpEnum {
      */
     SMTP_ENTERPRISE_QQ("smtp.exmail.qq.com"),
     /**
-     * 网易邮箱
+     * 网易邮箱。需开启POP3，使用密钥作为密码
      */
     SMTP_163("smtp.163.com"),
     /**

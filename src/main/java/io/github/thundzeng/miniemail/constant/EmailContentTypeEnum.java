@@ -15,7 +15,7 @@ public enum EmailContentTypeEnum {
      */
     HTML("text/html; charset=utf-8"),
     ;
-    private String contentType;
+    private final String contentType;
 
     EmailContentTypeEnum(String contentType) {
         this.contentType=contentType;

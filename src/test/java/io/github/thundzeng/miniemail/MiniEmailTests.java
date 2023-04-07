@@ -10,38 +10,41 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.mail.MessagingException;
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 public class MiniEmailTests {
     // 该邮箱修改为你需要测试的收件邮箱地址
-    private static final String TO_EMAIL = "thundzeng@qq.com";
+    private static final String TO_EMAIL = "13760324079@163.com";
     // 发送邮件给多个收件人
-    private static final String[] TO_EMAILS = new String[]{"thundzeng@qq.com", "1245725331@qq.com"};
+    private static final String[] TO_EMAILS = new String[]{"13760324079@139.com", "1245725331@qq.com", "xxx@qq.com"};
 
     MiniEmailFactory miniEmailFactory;
 
     @Before
     public void before() {
         // 使用入参创建（不推荐）
-//        miniEmailFactory = new MiniEmailFactoryBuilder().build(true, "123456@sina.com", "xxxxxx", SmtpEnum.SMTP_SINA);
+//        miniEmailFactory = new MiniEmailFactoryBuilder().build(true, "thundzeng@qq.com", "xxxxxx", SmtpEnum.SMTP_QQ);
         // 使用配置类创建（推荐）
-        miniEmailFactory = new MiniEmailFactoryBuilder().build(MailConfig.config("13760324479@139.com", "Changeme_test_888")
-                .setMailDebug(false)
+        miniEmailFactory = new MiniEmailFactoryBuilder().build(MailConfig.config("thundzeng@qq.com", "xxxxxx")
+                .setMailDebug(true)
                 .setSenderNickname("天雷盖地虎")
-                .setMailSmtpHost(SmtpEnum.SMTP_139));
+                .setMailSmtpHost(SmtpEnum.SMTP_QQ)
+        );
     }
 
     /**
      * 快速发送文本邮件，2行代码搞定
      */
     @Test
-    public void testSendText() throws MessagingException {
+    public void testSendText() {
         MiniEmail miniEmail = miniEmailFactory.init();
-        miniEmail.addCarbonCopy(TO_EMAILS).send(TO_EMAILS, "信件内容123456");
+        List<String> sendSuccessToList = miniEmail
+                .addCarbonCopy(new String[]{TO_EMAIL})
+                .send(TO_EMAILS, "这是来自 mini-email 的测试信文本内容");
+        System.out.println("send success to = " + sendSuccessToList);
     }
 
     /**
@@ -50,16 +53,17 @@ public class MiniEmailTests {
     @Test
     public void testSendHtml() {
         MiniEmail miniEmail = miniEmailFactory.init();
-        miniEmail.send(TO_EMAIL, "HTML邮件主题", EmailContentTypeEnum.HTML, "<h1 style='color:red;'>信件内容HTML123456</h1>");
+        List<String> sendSuccessToList = miniEmail
+                .addBlindCarbonCopy(new String[]{TO_EMAIL})
+                .send(TO_EMAILS, "HTML邮件主题", EmailContentTypeEnum.HTML, "<h1 style='color:red;'>这是来自 mini-email 的测试 HTML 内容</h1>");
+        System.out.println("send success to = " + sendSuccessToList);
     }
 
     /**
      * 复杂组合发送（附件+抄送+密送）
-     *
-     * @throws MalformedURLException
      */
     @Test
-    public void testSendAttachFileAndURL() throws MalformedURLException, MessagingException, UnsupportedEncodingException {
+    public void testSendAttachFileAndURL() throws MalformedURLException {
         File file = new File("D:\\Documents\\Pictures\\表情\\bug改完了吗.jpg");
 
         Assert.assertTrue("图片不存在", file.exists());
@@ -68,12 +72,14 @@ public class MiniEmailTests {
         long start = System.currentTimeMillis();
 
         MiniEmail miniEmail = miniEmailFactory.init();
-        miniEmail
-                .addCarbonCopy(new String[]{TO_EMAIL})
-                .addBlindCarbonCopy(TO_EMAILS)
+        List<String> sendSuccessToList = miniEmail
+                .addCarbonCopy(new String[]{"1846316024@qq.com"})
+                .addBlindCarbonCopy(new String[]{TO_EMAIL})
                 .addAttachment(file, "666.jpg")
                 .addAttachment(url, "THUNDZENG的头像.jpg")
-                .send("thundzeng@163.com", "致我们失去的青春", EmailContentTypeEnum.HTML, "<h2 style='color:blue;'>好久不见，老同学。</h2><br /><h2 style='color:red;'>请查看附件内容</h2>");
+                .send(TO_EMAILS, "致我们失去的青春", EmailContentTypeEnum.HTML, "<h2 style='color:blue;'>这是来自 mini-email 的测试 HTML 内容</h2><br /><h2 style='color:red;'>请查看附件内容</h2>");
         System.out.println("send finish,use time = " + (System.currentTimeMillis() - start) / 1000);
+
+        System.out.println("send success to = " + sendSuccessToList);
     }
 }

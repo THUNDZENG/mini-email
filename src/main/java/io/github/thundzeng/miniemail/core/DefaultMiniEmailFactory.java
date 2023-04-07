@@ -3,9 +3,9 @@ package io.github.thundzeng.miniemail.core;
 import io.github.thundzeng.miniemail.builder.EmailSessionBuilder;
 import io.github.thundzeng.miniemail.config.MailConfig;
 import io.github.thundzeng.miniemail.util.StringUtils;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeUtility;
 
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeUtility;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 
@@ -16,9 +16,9 @@ import java.lang.reflect.InvocationTargetException;
  */
 public class DefaultMiniEmailFactory implements MiniEmailFactory {
 
-    private EmailSessionBuilder sessionBuilder;
-    private String finalSenderName;
-    private String customMiniEmailPath;
+    private final EmailSessionBuilder sessionBuilder;
+    private final String finalSenderName;
+    private final String customMiniEmailPath;
 
     public DefaultMiniEmailFactory(MailConfig config) {
         // init session
@@ -44,7 +44,7 @@ public class DefaultMiniEmailFactory implements MiniEmailFactory {
         try {
             senderNickname = MimeUtility.encodeText(senderNickname) + " <" + username + ">";
         } catch (UnsupportedEncodingException e) {
-            DefaultMiniEmail.log.warning("## senderNickname 解析失败，重新使用 username 作为发件人别名。");
+            throw new RuntimeException("senderNickname 解析失败，重新使用 username 作为发件人别名。");
         }
 
         // 若定制发件人定制昵称为空，则使用 username 作为发件人别名
@@ -56,7 +56,7 @@ public class DefaultMiniEmailFactory implements MiniEmailFactory {
         try {
             baseMiniEmail = clazz.getDeclaredConstructor(MimeMessage.class, String.class)
                     .newInstance(new MimeMessage(sessionBuilder.parseSession()), finalSenderName);
-        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+        } catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException ignored) {
         }
 
         if (null == baseMiniEmail) {

@@ -2,17 +2,20 @@ package io.github.thundzeng.miniemail.core;
 
 import io.github.thundzeng.miniemail.constant.EmailContentTypeEnum;
 import io.github.thundzeng.miniemail.util.StringUtils;
+import jakarta.activation.DataHandler;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
+import jakarta.mail.internet.MimeUtility;
 
-import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Transport;
-import javax.mail.internet.*;
-import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * 基础邮件发送类。支持继承此类进行扩展
@@ -20,9 +23,9 @@ import java.util.Calendar;
  * @author thundzeng
  */
 public abstract class BaseMiniEmail implements MiniEmail {
-    private MimeMessage msg;
-    private MimeMultipart cover;
-    private String fromName;
+    private final MimeMessage msg;
+    private final MimeMultipart cover;
+    private final String fromName;
 
     public BaseMiniEmail(MimeMessage msg, String fromName) {
         this.msg = msg;
@@ -30,51 +33,72 @@ public abstract class BaseMiniEmail implements MiniEmail {
         this.cover = new MimeMultipart("mixed");
     }
 
-    public void send(String to, String content) {
-        send(to, null, EmailContentTypeEnum.TEXT, content);
+    /**
+     * 发送给单个收件人。支持主题、文本 or HTML 内容发送
+     *
+     * @param to 收件人
+     * @param subject 主题
+     * @param contentType 内容类型
+     * @param content 内容
+     * @return 发送成功的收件人邮箱
+     */
+    public String send(String to, String subject, EmailContentTypeEnum contentType, String content) {
+        config(subject, to, contentType, content);
+        boolean sendSuccess = this.send();
+        if (sendSuccess) {
+            return to;
+        }
+
+        return "";
+    }
+    /**
+     * 发送给多个收件人。支持主题、文本 or HTML 内容发送
+     *
+     * @param tos 收件人集合
+     * @param subject 主题
+     * @param contentType 内容类型
+     * @param content 内容
+     * @return 发送成功的收件人邮箱集合
+     */
+    public List<String> send(String[] tos, String subject, EmailContentTypeEnum contentType, String content) {
+        List<String> sendSuccessToList = new ArrayList<>(tos.length);
+        for (int i = 0; i < tos.length; i++) {
+            String to = tos[i];
+            String sendSuccessTo = this.send(to, subject, contentType, content);
+            if (StringUtils.isNotEmpty(sendSuccessTo)) {
+                sendSuccessToList.add(sendSuccessTo);
+            }
+            if (i == 0) {
+                try {
+                    // 清空抄送邮箱，防止重复发送
+                    msg.setHeader("Cc", "");
+                    // 清空密送邮箱，防止重复发送
+                    msg.setHeader("Bcc", "");
+                } catch (MessagingException ignored) {
+                }
+            }
+        }
+
+        return sendSuccessToList;
     }
 
-    public void send(String[] tos, String content) {
-        send(tos, null, EmailContentTypeEnum.TEXT, content);
-    }
-
-    public void send(String to, String subject, EmailContentTypeEnum contentType, String content) {
-        send(new String[]{to}, subject, contentType, content);
-    }
-
-    public void send(String[] tos, String subject, EmailContentTypeEnum contentType, String content) {
+    private boolean send() {
+        boolean sendSuccess = Boolean.FALSE;
         try {
-            config(subject, tos, contentType, content);
             msg.setSentDate(Calendar.getInstance().getTime());
             Transport.send(msg);
-        } catch (MessagingException e) {
-            e.printStackTrace();
+            sendSuccess = Boolean.TRUE;
+        } catch (MessagingException ignored) {
+            ignored.printStackTrace();
         } finally {
             // fix issue : https://gitee.com/thundzeng/mini-email/issues/I4GS8C
             try {
                 clearContentAfterSend();
-            } catch (MessagingException e) {
-                e.printStackTrace();
+            } catch (MessagingException ignored) {
             }
         }
-    }
 
-    public MiniEmail addAttachment(File file, String fileName) throws MessagingException, UnsupportedEncodingException {
-        setDataHandler(new DataHandler(new FileDataSource(file)), fileName);
-        return this;
-    }
-
-    public MiniEmail addAttachment(URL url, String urlName) throws MessagingException, UnsupportedEncodingException {
-        setDataHandler(new DataHandler(url), urlName);
-        return this;
-    }
-
-    public MiniEmail addCarbonCopy(String[] carbonCopies) throws MessagingException {
-        return addRecipient(carbonCopies, Message.RecipientType.CC);
-    }
-
-    public MiniEmail addBlindCarbonCopy(String[] blindCarbonCopies) throws MessagingException {
-        return addRecipient(blindCarbonCopies, Message.RecipientType.BCC);
+        return sendSuccess;
     }
 
     /**
@@ -82,10 +106,8 @@ public abstract class BaseMiniEmail implements MiniEmail {
      *
      * @param dataHandler 附件handler
      * @param fileName    附件名称
-     * @throws MessagingException
-     * @throws UnsupportedEncodingException
      */
-    private void setDataHandler(DataHandler dataHandler, String fileName) throws MessagingException, UnsupportedEncodingException {
+    public void setDataHandler(DataHandler dataHandler, String fileName) throws MessagingException, UnsupportedEncodingException {
         MimeBodyPart attachmentPart = new MimeBodyPart();
         attachmentPart.setDataHandler(dataHandler);
         attachmentPart.setFileName(StringUtils.isEmpty(fileName) ? MimeUtility.encodeText(dataHandler.getName()) : fileName);
@@ -100,7 +122,7 @@ public abstract class BaseMiniEmail implements MiniEmail {
      * @param contentType 发送内容类型。{@link EmailContentTypeEnum}
      * @param content     发送内容
      */
-    private void config(String subject, String[] to, EmailContentTypeEnum contentType, String content) {
+    private void config(String subject, String to, EmailContentTypeEnum contentType, String content) {
         try {
             msg.setFrom(new InternetAddress(fromName));
 
@@ -112,7 +134,6 @@ public abstract class BaseMiniEmail implements MiniEmail {
         } catch (MessagingException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -120,23 +141,28 @@ public abstract class BaseMiniEmail implements MiniEmail {
      *
      * @param recipients    收件人、抄送人、密抄送人数据
      * @param recipientType 发送类型
-     * @return MiniEmail
-     * @throws MessagingException
      */
-    private MiniEmail addRecipient(String[] recipients, Message.RecipientType recipientType) throws MessagingException {
+    private void addRecipient(String recipients, Message.RecipientType recipientType) throws MessagingException {
+        if (null != recipients) {
+            msg.setRecipients(recipientType, recipients);
+        }
+    }
+
+    /**
+     * 添加抄送人、密抄送人（只能批量添加，若是循环添加会导致只发第一个邮箱）
+     *
+     * @param recipients    收件人、抄送人、密抄送人数据
+     * @param recipientType 发送类型
+     */
+    public void addRecipients(String[] recipients, Message.RecipientType recipientType) throws MessagingException {
         if (null != recipients && recipients.length > 0) {
             InternetAddress[] parse = InternetAddress.parse(String.join(",", recipients));
             msg.setRecipients(recipientType, parse);
         }
-
-        return this;
     }
 
     /**
      * 设置发送的邮件内容
-     *
-     * @param content 邮件内容
-     * @throws MessagingException
      */
     private void setContent(EmailContentTypeEnum contentType, String content) throws MessagingException {
         MimeBodyPart bodyPart = new MimeBodyPart();
@@ -147,8 +173,6 @@ public abstract class BaseMiniEmail implements MiniEmail {
 
     /**
      * 内容发送成功后，清除发送的内容
-     *
-     * @throws MessagingException
      */
     private void clearContentAfterSend() throws MessagingException {
         int count = cover.getCount();

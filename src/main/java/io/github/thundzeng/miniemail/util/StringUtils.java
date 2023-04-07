@@ -7,11 +7,14 @@ package io.github.thundzeng.miniemail.util;
  * @author thundzeng
  */
 public class StringUtils {
-    public static boolean isEmpty(Object str) {
-        if (null == str) {
-            return true;
-        }
-        String toString = str.toString();
-        return ("".equals(toString) || "".equals(toString.trim()));
+
+    private StringUtils() {}
+
+    public static boolean isEmpty(CharSequence cs) {
+        return cs == null || cs.length() == 0;
+    }
+
+    public static boolean isNotEmpty(CharSequence cs) {
+        return !isEmpty(cs);
     }
 }
