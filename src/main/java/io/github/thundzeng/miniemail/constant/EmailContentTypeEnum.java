@@ -18,7 +18,7 @@ public enum EmailContentTypeEnum {
     private final String contentType;
 
     EmailContentTypeEnum(String contentType) {
-        this.contentType=contentType;
+        this.contentType = contentType;
     }
 
     public String getContentType() {

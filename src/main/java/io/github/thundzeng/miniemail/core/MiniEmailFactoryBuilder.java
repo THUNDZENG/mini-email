@@ -1,7 +1,7 @@
 package io.github.thundzeng.miniemail.core;
 
 import io.github.thundzeng.miniemail.config.MailConfig;
-import io.github.thundzeng.miniemail.constant.SmtpEnum;
+import io.github.thundzeng.miniemail.constant.SmtpHostEnum;
 import io.github.thundzeng.miniemail.exception.ParameterException;
 import io.github.thundzeng.miniemail.util.StringUtils;
 
@@ -14,16 +14,18 @@ public class MiniEmailFactoryBuilder {
 
 	/**
 	 * 建造 MiniEmailFactory
+	 * 于 V2.1.2 标注废弃，下版本会删除该方法。使用：{@link #build(MailConfig)} 代替
 	 *
 	 * @param debug    是否开启debug。
 	 * @param username 发件人邮箱。
 	 * @param password 发件人邮箱密码（qq邮箱、163邮箱需要的是邮箱授权码，新浪邮箱直接是邮箱登录密码）。
-	 * @param smtpEnum 支持的邮箱Host。{@link SmtpEnum}
+	 * @param smtpHostEnum 支持的邮箱Host。{@link SmtpHostEnum}
 	 * @return MiniEmailFactory
 	 */
-	public MiniEmailFactory build(boolean debug, String username, String password, SmtpEnum smtpEnum) {
+	@Deprecated
+	public MiniEmailFactory build(boolean debug, String username, String password, SmtpHostEnum smtpHostEnum) {
 		MailConfig config = MailConfig.config(username, password)
-				.setMailSmtpHost(smtpEnum)
+				.setMailSmtpHost(smtpHostEnum)
 				.setMailDebug(debug);
 
 		return this.build(config);

@@ -1,6 +1,6 @@
 package io.github.thundzeng.miniemail.config;
 
-import io.github.thundzeng.miniemail.constant.SmtpEnum;
+import io.github.thundzeng.miniemail.constant.SmtpHostEnum;
 
 /**
  * 邮件配置项 封装类
@@ -21,9 +21,9 @@ public class MailConfig {
      */
     private String senderNickname;
     /**
-     * 支持的邮箱Host。{@link SmtpEnum}
+     * 支持的邮箱Host。{@link SmtpHostEnum}
      */
-    private SmtpEnum mailSmtpHost;
+    private SmtpHostEnum mailSmtpHost;
     /**
      * 是否开启debug。默认false
      */
@@ -41,17 +41,9 @@ public class MailConfig {
      */
     private Boolean mailSmtpSslEnable = Boolean.TRUE;
     /**
-     * 传输协议。默认smtp
-     */
-    private String mailTransportProtocol = "smtp";
-    /**
      * 超时时间。默认10s
      */
     private Long mailSmtpTimeout = 10000L;
-    /**
-     * 端口。默认465
-     */
-    private Integer mailSmtpPort = 465;
 
     public static MailConfig config(String username, String password) {
         return new MailConfig().setUsername(username).setPassword(password);
@@ -69,7 +61,7 @@ public class MailConfig {
         return senderNickname;
     }
 
-    public SmtpEnum getMailSmtpHost() {
+    public SmtpHostEnum getMailSmtpHost() {
         return mailSmtpHost;
     }
 
@@ -89,16 +81,8 @@ public class MailConfig {
         return mailSmtpSslEnable;
     }
 
-    public String getMailTransportProtocol() {
-        return mailTransportProtocol;
-    }
-
     public Long getMailSmtpTimeout() {
         return mailSmtpTimeout;
-    }
-
-    public Integer getMailSmtpPort() {
-        return mailSmtpPort;
     }
 
     public MailConfig setUsername(String username) {
@@ -116,7 +100,7 @@ public class MailConfig {
         return this;
     }
 
-    public MailConfig setMailSmtpHost(SmtpEnum mailSmtpHost) {
+    public MailConfig setMailSmtpHost(SmtpHostEnum mailSmtpHost) {
         this.mailSmtpHost = mailSmtpHost;
         return this;
     }
@@ -141,18 +125,9 @@ public class MailConfig {
         return this;
     }
 
-    public MailConfig setMailTransportProtocol(String mailTransportProtocol) {
-        this.mailTransportProtocol = mailTransportProtocol;
-        return this;
-    }
-
     public MailConfig setMailSmtpTimeout(Long mailSmtpTimeout) {
         this.mailSmtpTimeout = mailSmtpTimeout;
         return this;
     }
 
-    public MailConfig setMailSmtpPort(Integer mailSmtpPort) {
-        this.mailSmtpPort = mailSmtpPort;
-        return this;
-    }
 }

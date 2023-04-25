@@ -2,7 +2,7 @@ package io.github.thundzeng.miniemail;
 
 import io.github.thundzeng.miniemail.config.MailConfig;
 import io.github.thundzeng.miniemail.constant.EmailContentTypeEnum;
-import io.github.thundzeng.miniemail.constant.SmtpEnum;
+import io.github.thundzeng.miniemail.constant.SmtpHostEnum;
 import io.github.thundzeng.miniemail.core.MiniEmail;
 import io.github.thundzeng.miniemail.core.MiniEmailFactory;
 import io.github.thundzeng.miniemail.core.MiniEmailFactoryBuilder;
@@ -17,21 +17,19 @@ import java.util.List;
 
 public class MiniEmailTests {
     // 该邮箱修改为你需要测试的收件邮箱地址
-    private static final String TO_EMAIL = "13760324079@163.com";
+    private static final String TO_EMAIL = "137xxxxxx79@139.com";
     // 发送邮件给多个收件人
-    private static final String[] TO_EMAILS = new String[]{"13760324079@139.com", "1245725331@qq.com", "xxx@qq.com"};
+    private static final String[] TO_EMAILS = new String[]{"1245725331@qq.com", "xxx@qq.com"};
 
     MiniEmailFactory miniEmailFactory;
 
     @Before
     public void before() {
-        // 使用入参创建（不推荐）
-//        miniEmailFactory = new MiniEmailFactoryBuilder().build(true, "thundzeng@qq.com", "xxxxxx", SmtpEnum.SMTP_QQ);
-        // 使用配置类创建（推荐）
+        // 创建工厂类
         miniEmailFactory = new MiniEmailFactoryBuilder().build(MailConfig.config("thundzeng@qq.com", "xxxxxx")
-                .setMailDebug(true)
+                .setMailDebug(Boolean.TRUE)
                 .setSenderNickname("天雷盖地虎")
-                .setMailSmtpHost(SmtpEnum.SMTP_QQ)
+                .setMailSmtpHost(SmtpHostEnum.SMTP_QQ)
         );
     }
 

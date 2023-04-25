@@ -43,7 +43,7 @@ public abstract class BaseMiniEmail implements MiniEmail {
      * @return 发送成功的收件人邮箱
      */
     public String send(String to, String subject, EmailContentTypeEnum contentType, String content) {
-        config(subject, to, contentType, content);
+        this.config(subject, to, contentType, content);
         boolean sendSuccess = this.send();
         if (sendSuccess) {
             return to;
@@ -93,7 +93,7 @@ public abstract class BaseMiniEmail implements MiniEmail {
         } finally {
             // fix issue : https://gitee.com/thundzeng/mini-email/issues/I4GS8C
             try {
-                clearContentAfterSend();
+                this.clearContentAfterSend();
             } catch (MessagingException ignored) {
             }
         }
@@ -128,9 +128,9 @@ public abstract class BaseMiniEmail implements MiniEmail {
 
             msg.setSubject(subject, "UTF-8");
 
-            addRecipient(to, Message.RecipientType.TO);
+            this.addRecipient(to, Message.RecipientType.TO);
 
-            setContent(contentType, content);
+            this.setContent(contentType, content);
         } catch (MessagingException e) {
             e.printStackTrace();
         }

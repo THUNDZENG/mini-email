@@ -1,13 +1,13 @@
 # mini-email
 
-迷你又实用的 Java 邮件发送类库，2行代码即可发送邮件。支持 QQ邮箱、QQ企业邮箱、新浪邮箱、网易163邮箱以及中国移动139邮箱。
+迷你又实用的 Java 邮件发送类库，2行代码即可发送邮件。支持：QQ邮箱、QQ企业邮箱、新浪邮箱、网易163邮箱、中国移动139邮箱和微软outlook邮箱。
 
 [![maven-central](https://img.shields.io/maven-central/v/io.github.thundzeng/mini-email.svg?style=flat-square)](https://mvnrepository.com/artifact/io.github.thundzeng/mini-email)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## 前言
 
-- 建议使用jdk1.8+
+- 必须使用 jdk1.8 及以上版本
 - 若此项目你也在使用，请给一个 Star 鼓励下作者噢~
 - 若对项目有任何疑问，可在 Issues 上新增 Issue，作者看到会第一时间查看和回复噢~
 - 若你对项目有更好的功能或建设性代码，可从 fork mini-email 的 master 分支到本地仓库，对代码更改完成后，再向 mini-email 的 master 分支发起 pr。欢迎大家提交代码噢~
@@ -21,6 +21,7 @@
 - 非常简洁的邮件发送API，2行代码即可发送邮件
 - 支持自定义发件人昵称、支持邮件抄送、密抄和附件发送
 - 支持发送 HTML 邮件
+- 支持返回邮件发送成功的邮箱
 - 支持自定义扩展邮件发送
 - 封装合理，代码易读易维护
 
@@ -38,7 +39,7 @@
 <dependency>
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>2.1.1</version>
+    <version>最新版本</version>
 </dependency>
 ```
 
@@ -47,21 +48,19 @@
 ```java
 public class MiniEmailTests {
     // 该邮箱修改为你需要测试的收件邮箱地址
-    private static final String TO_EMAIL = "13760324079@163.com";
+    private static final String TO_EMAIL = "137xxxxxx79@139.com";
     // 发送邮件给多个收件人
-    private static final String[] TO_EMAILS = new String[]{"13760324079@139.com", "1245725331@qq.com", "xxx@qq.com"};
+    private static final String[] TO_EMAILS = new String[]{"1245725331@qq.com", "xxx@qq.com"};
 
     MiniEmailFactory miniEmailFactory;
 
     @Before
     public void before() {
-        // 使用入参创建（不推荐）
-//        miniEmailFactory = new MiniEmailFactoryBuilder().build(true, "thundzeng@qq.com", "xxxxxx", SmtpEnum.SMTP_QQ);
-        // 使用配置类创建（推荐）
+        // 创建工厂类
         miniEmailFactory = new MiniEmailFactoryBuilder().build(MailConfig.config("thundzeng@qq.com", "xxxxxx")
-                .setMailDebug(true)
+                .setMailDebug(Boolean.TRUE)
                 .setSenderNickname("天雷盖地虎")
-                .setMailSmtpHost(SmtpEnum.SMTP_QQ)
+                .setMailSmtpHost(SmtpHostEnum.SMTP_QQ)
         );
     }
 
@@ -115,7 +114,9 @@ public class MiniEmailTests {
 }
 ```
 
-## 问题建议
+## 如何联系我
+
+如果在使用过程中有任何疑问和建议，或者需要进行软件开发外包[](https://)，可通过以下方式联系我：
 
 - 我的邮箱：`thundzeng@qq.com`
-- 我的QQ（添加时备注mini-email）：`1846316024`
+- 我的QQ（添加时备注：mini-email+申请备注）：`1846316024`

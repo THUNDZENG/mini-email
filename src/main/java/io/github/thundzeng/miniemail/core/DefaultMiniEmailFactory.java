@@ -23,7 +23,7 @@ public class DefaultMiniEmailFactory implements MiniEmailFactory {
     public DefaultMiniEmailFactory(MailConfig config) {
         // init session
         this.sessionBuilder = new EmailSessionBuilder(config);
-        this.finalSenderName = constructFinalSenderName(config.getSenderNickname(), config.getUsername());
+        this.finalSenderName = this.constructFinalSenderName(config.getSenderNickname(), config.getUsername());
         this.customMiniEmailPath = config.getCustomMiniEmail();
     }
 
