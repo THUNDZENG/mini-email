@@ -19,17 +19,19 @@ public class MiniEmailTests {
     // 该邮箱修改为你需要测试的收件邮箱地址
     private static final String TO_EMAIL = "137xxxxxx79@139.com";
     // 发送邮件给多个收件人
-    private static final String[] TO_EMAILS = new String[]{"1245725331@qq.com", "xxx@qq.com"};
+    private static final String[] TO_EMAILS = new String[]{"1245725331@qq.com", "137xxxxxx79@139.com"};
 
     MiniEmailFactory miniEmailFactory;
 
     @Before
     public void before() {
         // 创建工厂类
-        miniEmailFactory = new MiniEmailFactoryBuilder().build(MailConfig.config("thundzeng@qq.com", "xxxxxx")
-                .setMailDebug(Boolean.TRUE)
+        miniEmailFactory = new MiniEmailFactoryBuilder().build(MailConfig.config("1846316024@qq.com", "abcdefg")
+                .setMailDebug(Boolean.FALSE)
                 .setSenderNickname("天雷盖地虎")
-                .setMailSmtpHost(SmtpHostEnum.SMTP_QQ)
+                .setMailSmtpSslEnable(Boolean.TRUE)
+                .setSmtpHost(SmtpHostEnum.SMTP_QQ.getSmtpHost())
+                .setSmtpPort(SmtpHostEnum.SMTP_QQ.getSslPort())
         );
     }
 

@@ -5,6 +5,8 @@ import io.github.thundzeng.miniemail.constant.SmtpHostEnum;
 import io.github.thundzeng.miniemail.exception.ParameterException;
 import io.github.thundzeng.miniemail.util.StringUtils;
 
+import java.util.Objects;
+
 /**
  * 建造 {@link MiniEmail} 实例。
  *
@@ -52,8 +54,11 @@ public class MiniEmailFactoryBuilder {
 		if (StringUtils.isEmpty(config.getUsername()) || StringUtils.isEmpty(config.getPassword())) {
 			throw new ParameterException("请填写完整的收件人信息");
 		}
-		if (null == config.getMailSmtpHost()) {
-			throw new ParameterException("请选择邮件Host");
+		if (StringUtils.isEmpty(config.getSmtpHost())) {
+			throw new ParameterException("请填写邮箱Host");
+		}
+		if (Objects.isNull(config.getSmtpPort())) {
+			throw new ParameterException("请填写邮箱Port");
 		}
 	}
 }

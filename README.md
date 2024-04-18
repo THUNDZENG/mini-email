@@ -1,6 +1,6 @@
 # mini-email
 
-迷你又实用的 Java 邮件发送类库，2行代码即可发送邮件。支持：QQ邮箱、QQ企业邮箱、新浪邮箱、网易163邮箱、中国移动139邮箱和微软outlook邮箱。
+迷你又实用的 Java 邮件发送类库，2行代码即可发送邮件。支持：QQ邮箱、QQ企业邮箱、新浪邮箱、网易163邮箱、中国移动139邮箱、微软outlook邮箱，以及阿里云企业邮箱。
 
 [![maven-central](https://img.shields.io/maven-central/v/io.github.thundzeng/mini-email.svg?style=flat-square)](https://mvnrepository.com/artifact/io.github.thundzeng/mini-email)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg?style=flat-square)](https://www.apache.org/licenses/LICENSE-2.0.html)
@@ -8,7 +8,7 @@
 ## 前言
 
 - 必须使用 jdk1.8 及以上版本
-- 若此项目你也在使用，请给一个 Star 鼓励下作者噢~
+- 若此项目你也在使用，请给项目一个 Star 或 Watch ，鼓励作者的同时还能收到最新的版本变更推送噢~
 - 若对项目有任何疑问，可在 Issues 上新增 Issue，作者看到会第一时间查看和回复噢~
 - 若你对项目有更好的功能或建设性代码，可从 fork mini-email 的 master 分支到本地仓库，对代码更改完成后，再向 mini-email 的 master 分支发起 pr。欢迎大家提交代码噢~
 - 国内访问github受限，所以下面贴上 gitee 和 github 对应项目地址，大家各自选择。请注意：最新代码会维护在 gitee ，github 代码同步会延迟。
@@ -39,7 +39,7 @@
 <dependency>
     <groupId>io.github.thundzeng</groupId>
     <artifactId>mini-email</artifactId>
-    <version>最新版本</version>
+    <version>2.2.1</version>
 </dependency>
 ```
 
@@ -57,10 +57,12 @@ public class MiniEmailTests {
     @Before
     public void before() {
         // 创建工厂类
-        miniEmailFactory = new MiniEmailFactoryBuilder().build(MailConfig.config("thundzeng@qq.com", "xxxxxx")
-                .setMailDebug(Boolean.TRUE)
+        miniEmailFactory = new MiniEmailFactoryBuilder().build(MailConfig.config("1846316024@qq.com", "abcdefg")
+                .setMailDebug(Boolean.FALSE)
                 .setSenderNickname("天雷盖地虎")
-                .setMailSmtpHost(SmtpHostEnum.SMTP_QQ)
+                .setMailSmtpSslEnable(Boolean.TRUE)
+                .setSmtpHost(SmtpHostEnum.SMTP_QQ.getSmtpHost())
+                .setSmtpPort(SmtpHostEnum.SMTP_QQ.getSslPort())
         );
     }
 
@@ -114,9 +116,16 @@ public class MiniEmailTests {
 }
 ```
 
+## 使用问题
+
+若是在集成 mini-email 中遇到了问题，可以 [点击这里](https://gitee.com/thundzeng/mini-email/wikis/mini-email%E7%9A%84Wiki) 寻找解决方案。若是记录中未能解决你的问题，可在下方中找到我的联系方式，把问题描述和对应报错信息发送到我邮箱，收到邮件后我会第一时间协助解决。
+
 ## 如何联系我
 
-如果在使用过程中有任何疑问和建议，或者需要进行软件开发外包[](https://)，可通过以下方式联系我：
+如果在使用过程中有任何疑问和建议，可通过邮箱方式联系我：
 
 - 我的邮箱：`thundzeng@qq.com`
-- 我的QQ（添加时备注：mini-email+申请备注）：`1846316024`
+
+另外本人承接 H5、Web、小程序、App 定制开发，如有需要可通过以下方式联系我：
+
+* 我的QQ（添加时备注：来自mini-email+定制开发）：`1846316024`

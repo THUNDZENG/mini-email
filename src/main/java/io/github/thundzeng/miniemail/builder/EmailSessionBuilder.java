@@ -2,13 +2,11 @@ package io.github.thundzeng.miniemail.builder;
 
 import com.sun.mail.util.MailSSLSocketFactory;
 import io.github.thundzeng.miniemail.config.MailConfig;
-import io.github.thundzeng.miniemail.constant.SmtpPortEnum;
 import jakarta.mail.Authenticator;
 import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 
 import java.security.GeneralSecurityException;
-import java.util.Objects;
 import java.util.Properties;
 
 /**
@@ -40,20 +38,13 @@ public class EmailSessionBuilder {
 
 		props.put("mail.transport.protocol", "smtp");
 		props.put("mail.smtp.timeout", config.getMailSmtpTimeout());
-		props.put("mail.smtp.host", config.getMailSmtpHost().getSmtpHost());
-
-		SmtpPortEnum smtpPortEnum = SmtpPortEnum.getBySmtpHost(config.getMailSmtpHost());
-		if (Objects.isNull(smtpPortEnum)) {
-			throw new RuntimeException("请正确配置 mailSmtpHost ！");
-		}
-		// 根据是否开启SSL自动寻找端口号
-		Integer port = Boolean.TRUE.equals(config.getMailSmtpSslEnable()) ? smtpPortEnum.getSslPort() : smtpPortEnum.getNotSslPort();
-		props.put("mail.smtp.port", port);
+		props.put("mail.smtp.host", config.getSmtpHost());
+		props.put("mail.smtp.port", config.getSmtpPort());
 
 		props.setProperty("username", config.getUsername());
 		props.setProperty("password", config.getPassword());
 
-		props.put("mail.debug", Boolean.TRUE.equals(config.getMailDebug()) ? "true" : "false");
+		props.put("mail.debug", config.getMailDebug().toString());
 
 		this.props = props;
 	}

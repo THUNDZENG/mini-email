@@ -21,9 +21,22 @@ public class MailConfig {
      */
     private String senderNickname;
     /**
+     * V2.2.1版本标注该字段已启用，后续版本可能删除
      * 支持的邮箱Host。{@link SmtpHostEnum}
      */
+    @Deprecated
     private SmtpHostEnum mailSmtpHost;
+
+    /**
+     * 邮箱Host
+     */
+    private String smtpHost;
+
+    /**
+     * 邮箱port
+     */
+    private Integer smtpPort;
+
     /**
      * 是否开启debug。默认false
      */
@@ -61,8 +74,17 @@ public class MailConfig {
         return senderNickname;
     }
 
+    @Deprecated
     public SmtpHostEnum getMailSmtpHost() {
         return mailSmtpHost;
+    }
+
+    public String getSmtpHost() {
+        return smtpHost;
+    }
+
+    public Integer getSmtpPort() {
+        return smtpPort;
     }
 
     public Boolean getMailDebug() {
@@ -100,8 +122,26 @@ public class MailConfig {
         return this;
     }
 
+    /**
+     * V2.2.1版本标注该字段已启用，后续版本可能删除，可使用以下2个方法代替：
+     * {@link MailConfig#setSmtpHost(String)}
+     * {@link MailConfig#setSmtpPort(Integer)}
+     */
+    @Deprecated
     public MailConfig setMailSmtpHost(SmtpHostEnum mailSmtpHost) {
         this.mailSmtpHost = mailSmtpHost;
+        this.smtpHost = mailSmtpHost.getSmtpHost();
+        this.smtpPort = Boolean.TRUE.equals(this.mailSmtpSslEnable) ?  mailSmtpHost.getSslPort() : mailSmtpHost.getNotSslPort();
+        return this;
+    }
+
+    public MailConfig setSmtpHost(String smtpHost) {
+        this.smtpHost = smtpHost;
+        return this;
+    }
+
+    public MailConfig setSmtpPort(Integer smtpPort) {
+        this.smtpPort = smtpPort;
         return this;
     }
 

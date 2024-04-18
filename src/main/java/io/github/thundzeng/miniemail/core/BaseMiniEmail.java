@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * 基础邮件发送类。支持继承此类进行扩展
@@ -23,6 +24,7 @@ import java.util.List;
  * @author thundzeng
  */
 public abstract class BaseMiniEmail implements MiniEmail {
+    private final Logger logger;
     private final MimeMessage msg;
     private final MimeMultipart cover;
     private final String fromName;
@@ -31,6 +33,7 @@ public abstract class BaseMiniEmail implements MiniEmail {
         this.msg = msg;
         this.fromName = fromName;
         this.cover = new MimeMultipart("mixed");
+        logger = Logger.getLogger(BaseMiniEmail.class.getName());
     }
 
     /**
@@ -44,7 +47,7 @@ public abstract class BaseMiniEmail implements MiniEmail {
      */
     public String send(String to, String subject, EmailContentTypeEnum contentType, String content) {
         this.config(subject, to, contentType, content);
-        boolean sendSuccess = this.send();
+        boolean sendSuccess = this.send(to);
         if (sendSuccess) {
             return to;
         }
@@ -82,14 +85,20 @@ public abstract class BaseMiniEmail implements MiniEmail {
         return sendSuccessToList;
     }
 
-    private boolean send() {
+    /**
+     * @description 发起发送邮件请求
+     * @author thundzeng
+     * @param to 收件人邮箱，用于记录日志
+     * @return boolean
+    **/
+    private boolean send(String to) {
         boolean sendSuccess = Boolean.FALSE;
         try {
             msg.setSentDate(Calendar.getInstance().getTime());
             Transport.send(msg);
             sendSuccess = Boolean.TRUE;
         } catch (MessagingException ignored) {
-            ignored.printStackTrace();
+            logger.warning("[" + to + "]投递失败，原因：" + ignored.getMessage());
         } finally {
             // fix issue : https://gitee.com/thundzeng/mini-email/issues/I4GS8C
             try {
